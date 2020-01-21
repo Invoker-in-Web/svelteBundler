@@ -1,5 +1,6 @@
 import Button from './Button.svelte';
 
+
 const button = new Button({
   target: document.body,
   // props: {
@@ -7,6 +8,6 @@ const button = new Button({
   // }
 })
 
-window.button = button;
+// window.button = button;
 
 export default button;

@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
 const mode = process.env.NODE_ENV || 'development';
-const prod = mode === 'production';
+// const prod = mode === 'production';
 
 module.exports = {
   entry: {
@@ -12,7 +12,7 @@ module.exports = {
     alias: {
       svelte: path.resolve('node_modules', 'svelte')
     },
-    extensions: ['.mjs', '.js', '.svelte', '.tsx', '.ts'],
+    extensions: [".mjs", ".ts", ".tsx", ".js", ".json", ".svelte"],
     mainFields: ['svelte', 'browser', 'module', 'main']
   },
   output: {
@@ -22,50 +22,48 @@ module.exports = {
   },
   module: {
     rules: [
+      // { не транспилирует даже в отдельном правиле
+      //   test: /\.(svelte)$/,
+      //   use: {
+      //     loader: 'babel-loader',
+      //   }
+      // },
       {
-        test: /\.svelte$/,
-        use: {
-          loader: 'svelte-loader',
-          options: {
-            emitCss: true,
-            hotReload: true,
-          }
-        }
+        test: /\.(mjs|ts|js)$/,
+        include: [/svelte/],
+        use: ['babel-loader'],
       },
       {
-        test: /\.css$/,
+        test: /\.(html|svelte)$/,
+        exclude: /node_modules/,
         use: [
-          MiniCssExtractPlugin.loader,
+          'babel-loader',
           {
-            loader: 'css-loader',
-          }, {
-            loader: 'postcss-loader',
-            options: { config: { path: 'src/js/postcss.config.js' } }
-          }
-        ]
+            loader: 'svelte-loader',
+            options: {
+              emitCss: true,
+              hotReload: true,
+              hydratable: true, //позволяет динамически менять html
+              // preprocess: require('svelte-preprocess')({ /* options */ }) разобраться
+            }
+          }]
       },
       {
-        test: /\.scss$/,
+        test: /\.(css|sass|scss|pcss)$/,
         use: [
+          "style-loader",  // Creates `style` nodes from JS strings
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-loader',
-          }, {
-            loader: 'postcss-loader',
-            options: { config: { path: 'src/js/postcss.config.js' } }
-          }
-        ]
-      },
-      {
-        test: /\.pcss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
+            loader: 'css-loader', // Translates CSS into CommonJS
+            options: {
+              exportOnlyLocals: false,
+            }
+          },
           {
-            loader: 'css-loader',
-          }, {
             loader: 'postcss-loader',
-            options: { config: { path: 'src/js/postcss.config.js' } }
-          }
+            options: { config: { path: 'src/js/config/postcss.config.js' } }
+          },
+          "sass-loader" // Compiles Sass to CSS
         ]
       },
       {
