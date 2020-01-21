@@ -30,7 +30,7 @@ module.exports = {
       // },
       {
         test: /\.(mjs|ts|js)$/,
-        include: [/svelte/],
+        include: [/svelte/], // не помогает
         use: ['babel-loader'],
       },
       {
@@ -44,7 +44,29 @@ module.exports = {
               emitCss: true,
               hotReload: true,
               hydratable: true, //позволяет динамически менять html
-              // preprocess: require('svelte-preprocess')({ /* options */ }) разобраться
+              preprocess: require('svelte-preprocess')({
+                transformers: {
+                  // postcss: true,
+                  postcss: {
+                    plugins: [
+                      require('autoprefixer'),
+                      require('css-mqpacker'),
+                      require('postcss-simple-vars'),
+                      require('postcss-nested'),
+                      require('postcss-mixins'),
+                      require('cssnano')({
+                        preset: [
+                          'default', {
+                            discardComments: {
+                              removeAll: true,
+                            }
+                          }
+                        ]
+                      })
+                    ]
+                  }
+                },
+              })
             }
           }]
       },
@@ -61,7 +83,7 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: { config: { path: 'src/js/config/postcss.config.js' } }
+            options: { config: { path: 'src/postcss.config.js' } }
           },
           "sass-loader" // Compiles Sass to CSS
         ]

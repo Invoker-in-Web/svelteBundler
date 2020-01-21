@@ -3,6 +3,17 @@
 </script>
 
 <style>
+  $aquaColor: aqua;
+  $redColor: red;
+  $brownColor: brown;
+  $borderWidth: 5px;
+  $borderType: solid;
+  $borderColor: blue;
+
+  @define-mixin typicalBorder {
+    border: $borderWidth $borderType $borderColor;
+  }
+
   .firstButton {
     display: flex;
     color: red;
@@ -12,11 +23,18 @@
     color: green;
   }
 
-  /* .mainUL {
+  .mainUL {
     .first {
-      color: red;
-    } 
-  } */
+      color: $redColor;
+    }
+    .second {
+      color: $aquaColor;
+      @mixin typicalBorder;
+    }
+    .third {
+      color: $brownColor;
+    }
+  }
 </style>
 
 <button class="firstButton">Первая Кнопка</button>
