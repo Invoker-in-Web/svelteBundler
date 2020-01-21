@@ -66,6 +66,19 @@ module.exports = {
                     ]
                   }
                 },
+                typescript: {
+                  tsconfigFile: './tsconfig.json',
+                  compilerOptions: {
+                    outDir: "/public",
+                    noImplicitAny: true,
+                    module: "es6",
+                    target: "es5",
+                    jsx: "react",
+                    allowJs: true,
+                    sourceMap: true,
+                  },
+                  transpileOnly: true,
+                }
               })
             }
           }]
@@ -83,7 +96,7 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: { config: { path: 'src/postcss.config.js' } }
+            options: { config: { path: './src/postcss.config.js' } }
           },
           "sass-loader" // Compiles Sass to CSS
         ]

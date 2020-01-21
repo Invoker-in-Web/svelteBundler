@@ -1,4 +1,5 @@
 import Button from './Button.svelte';
+import greeter from './ts/greeter';
 
 
 const button = new Button({
@@ -8,6 +9,11 @@ const button = new Button({
   // }
 })
 
-// window.button = button;
 
-export default button;
+// const greeter2 = new greeter({
+//   target: document.body
+// })
+
+
+
+export { button };
