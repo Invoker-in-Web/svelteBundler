@@ -2,7 +2,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
 const mode = process.env.NODE_ENV || 'development';
-// const prod = mode === 'production';
+const prod = mode === 'production';
 
 module.exports = {
   entry: {
@@ -12,82 +12,50 @@ module.exports = {
     alias: {
       svelte: path.resolve('node_modules', 'svelte')
     },
-    extensions: [".mjs", ".ts", ".tsx", ".js", ".json", ".svelte"],
+    extensions: ['.mjs', '.js', '.svelte', ".ts", ".tsx", ".json"],
     mainFields: ['svelte', 'browser', 'module', 'main']
   },
   output: {
     path: __dirname + '/public',
     filename: '[name].js',
-    chunkFilename: '[name].[id].js'
   },
   module: {
     rules: [
-      // { не транспилирует даже в отдельном правиле
-      //   test: /\.(svelte)$/,
-      //   use: {
-      //     loader: 'babel-loader',
-      //   }
-      // },
       {
-        test: /\.(mjs|ts|js)$/,
-        include: [/svelte/], // не помогает
-        use: ['babel-loader'],
+        test: /\.(js|mjs|ts)$/,
+        exclude: /node_modules/,
+        use: [{
+          loader: 'babel-loader',
+        }],
       },
       {
-        test: /\.(html|svelte)$/,
+        test: /\.svelte$/,
         exclude: /node_modules/,
         use: [
-          'babel-loader',
           {
             loader: 'svelte-loader',
             options: {
               emitCss: true,
               hotReload: true,
-              hydratable: true, //позволяет динамически менять html
               preprocess: require('svelte-preprocess')({
                 transformers: {
-                  // postcss: true,
-                  postcss: {
-                    plugins: [
-                      require('autoprefixer'),
-                      require('css-mqpacker'),
-                      require('postcss-simple-vars'),
-                      require('postcss-nested'),
-                      require('postcss-mixins'),
-                      require('cssnano')({
-                        preset: [
-                          'default', {
-                            discardComments: {
-                              removeAll: true,
-                            }
-                          }
-                        ]
-                      })
-                    ]
-                  }
+                  postcss: true,
                 },
                 typescript: {
                   tsconfigFile: './tsconfig.json',
-                  compilerOptions: {
-                    outDir: "/public",
-                    noImplicitAny: true,
-                    module: "es6",
-                    target: "es5",
-                    jsx: "react",
-                    allowJs: true,
-                    sourceMap: true,
-                  },
                   transpileOnly: true,
                 }
               })
             }
-          }]
+          },
+          'babel-loader'
+        ]
       },
       {
         test: /\.(css|sass|scss|pcss)$/,
         use: [
-          "style-loader",  // Creates `style` nodes from JS strings
-          MiniCssExtractPlugin.loader,
+          prod ? MiniCssExtractPlugin.loader :
+            "style-loader",  // Creates `style` nodes from JS strings
           {
             loader: 'css-loader', // Translates CSS into CommonJS
             options: {
@@ -96,15 +64,25 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: { config: { path: './src/postcss.config.js' } }
+            // options: { config: { path: './src/postcss.config.js' } }
           },
           "sass-loader" // Compiles Sass to CSS
         ]
       },
       {
-        test: /\.tsx?/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        test: /\.html?/,
+        use: [{
+          loader: "svelte-loader",
+          options: {
+            hydratable: true
+          },
+        }],
+      },
+      {
+        test: /\.(js|ts)$/,
+        use: [{
+          loader: 'ts-loader',
+        }],
       },
     ]
   },
@@ -114,5 +92,5 @@ module.exports = {
       filename: '[name].css'
     })
   ],
-  devtool: 'inline-source-map'
+  devtool: prod ? false : 'source-map',
 };

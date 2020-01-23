@@ -1,11 +1,35 @@
-<script>
+<script lang="typescript">
   const props = {
+    obj: {
+      firstProperty: null
+    },
     id: 1251243,
     phone: "8-999-555-44-22",
     address: "Earth",
     street: "Broken Lamps",
     home: 666
   };
+
+console.log(props.obj?.firstProperty ?? 'что-то вместо null');
+
+function svelteTS(person: string) {
+    return "Hello, " + person;
+}
+
+let TSuser = "svelte___TS USER";
+
+document.body.textContent = svelteTS(TSuser);
+
+  console.log(
+    "class Abc constructor name",
+    new (class Abc {})().constructor.name
+  );
+
+  const getString = (param1 = true) =>
+    param1 ? "got trusy param" : "got falsy param";
+  const resultzzzz = getString();
+  console.log(resultzzzz);
+
   function firstButtonHandle() {
     const dummyText = "FirstText";
     document.getElementsByClassName("customTextarea")[0].append(dummyText);
@@ -21,64 +45,6 @@
     document.getElementsByClassName("customP").home = props.home;
   }
 </script>
-
-<style>
-  $aquaColor: aqua;
-  $redColor: red;
-  $brownColor: brown;
-  $borderWidth: 5px;
-  $borderType: solid;
-  $borderColor: blue;
-
-  @define-mixin typicalBorder {
-    border: $borderWidth $borderType $borderColor;
-  }
-
-  .firstButton {
-    display: flex;
-    justify-content: center;
-    color: red;
-  }
-
-  .secondButton {
-    color: green;
-    justify-content: center;
-  }
-
-  .mainUL {
-    .first {
-      color: $redColor;
-    }
-    .second {
-      color: $aquaColor;
-    }
-    .third {
-      color: $brownColor;
-    }
-  }
-
-  .buttons {
-    display: flex;
-    justify-content: space-evenly;
-  }
-
-  .wrapper {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: flex-start;
-  }
-  .firstField,
-  .secondField {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 400px;
-  }
-
-  .customP {
-    @mixin typicalBorder;
-  }
-</style>
 
 <div class="wrapper">
   <div class="firstField">
@@ -101,3 +67,25 @@
   <li class="second">какой-то текст</li>
   <li class="third">какой-то текст</li>
 </ul>
+
+<style>
+$aquaColor: aqua;
+$borderSize: 5px;
+$borderType: solid;
+$borderColor: blue;
+
+@define-mixin typicalBorder{
+  border: $borderSize $borderType $borderColor
+}
+
+ul{
+
+.first{
+  display: flex;
+  color: $aquaColor;
+  @mixin typicalBorder;
+}
+
+}
+
+</style>
